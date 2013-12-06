@@ -1,0 +1,23 @@
+﻿<Window x:Class="Launcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Button Content="Start" Click="Button_Click" Margin="357,277,0,0" />
+        <CheckBox x:Name="IsOnline" Content="Online Play" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <GroupBox Header="Network" Margin="10,20,116,144">
+            <StackPanel Orientation="Vertical">
+             <CheckBox x:Name="IsHost" Content="IsHost" />
+                <Label x:Name="MyIPLabel" Content="MyIP:" />
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Port"/>
+                    <TextBox x:Name="PortNumber" Width="338"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="IP"/>
+                    <TextBox x:Name="IPAddress" Width="353"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</Window>

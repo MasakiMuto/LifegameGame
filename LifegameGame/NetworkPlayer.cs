@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net.Sockets;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace LifegameGame
 {
@@ -15,28 +17,86 @@ namespace LifegameGame
 
 	public class NetworkPlayer : Player
 	{
-		
+		TcpClient socket;
+		NetworkStream stream;
+		ConnectionInfo Info;
 
-		Socket socket;
 
 		public NetworkPlayer(GameBoard board, GridState side, ConnectionInfo info)
 			: base(board, side)
 		{
-			if (info.IsHost)
+			Info = info;
+		}
+
+		public void Connect()
+		{
+			if (Info.IsHost)
 			{
-				var s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-				socket = s.Accept();
+				Trace.WriteLine("I am host");
+				var listener = new TcpListener(Info.TargetIP, Info.Port);
+				listener.Start();
+				Trace.WriteLine("accepting...");
+				Trace.WriteLine(listener.LocalEndpoint.ToString());
+				socket = listener.AcceptTcpClient();
+				Trace.WriteLine("accepted!");
+				Trace.WriteLine(socket.Client.RemoteEndPoint.ToString());
+				listener.Stop();
 			}
 			else
 			{
-				socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-				socket.Connect(info.TargetIP, info.Port);
+				Trace.WriteLine("I am client");
+				socket = new TcpClient();
+				socket.Connect(Info.TargetIP, Info.Port);
+				Trace.WriteLine("connected!");
 			}
+			stream = socket.GetStream();
+
 		}
+
+		bool reading;
+		Task<Point> task;
 
 		public override bool Update()
 		{
-			throw new Exception();
+			if (!reading)
+			{
+				reading = true;
+				task = Task.Factory.StartNew<Point>(() =>
+					{
+						int x, y;
+						var reader = new System.IO.BinaryReader(stream);
+						x = reader.ReadInt32();
+						y = reader.ReadInt32();
+						return new Point(x, y);
+					});
+			}
+			if (task.Status == TaskStatus.RanToCompletion)
+			{
+				reading = false;
+				Play(task.Result);
+				return true;
+			}
+			else if (task.Status == TaskStatus.Faulted)
+			{
+				throw task.Exception;
+			}
+
+			return false;
+		}
+
+		public void Send(Point p)
+		{
+			var writer = new System.IO.BinaryWriter(stream);
+			writer.Write(p.X);
+			writer.Write(p.Y);
+			writer.Flush();
+		}
+
+		public override void Dispose()
+		{
+			base.Dispose();
+			stream.Close();
+			socket.Close();
 		}
 	}
 }
