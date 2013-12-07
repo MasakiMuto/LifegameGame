@@ -107,10 +107,12 @@ namespace LifegameGame
 			if (socket != null)
 			{
 				socket.Close();
+				socket = null;
 			}
 			if(listener != null)
 			{ 
 				listener.Stop();
+				listener = null;
 			}
 		}
 	}
