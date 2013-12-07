@@ -128,7 +128,6 @@ namespace LifegameGame
 			}
 			try
 			{
-
 				if (players[current].Update())
 				{
 					current = 1 - current;
@@ -162,6 +161,8 @@ namespace LifegameGame
 			base.Dispose(disposing);
 			board.Dispose();
 			board = null;
+			players[0].Dispose();
+			players[1].Dispose();
 		}
 
 	}

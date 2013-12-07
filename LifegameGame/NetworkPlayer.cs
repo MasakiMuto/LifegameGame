@@ -20,6 +20,7 @@ namespace LifegameGame
 		TcpClient socket;
 		NetworkStream stream;
 		ConnectionInfo Info;
+		TcpListener listener;
 
 
 		public NetworkPlayer(GameBoard board, GridState side, ConnectionInfo info)
@@ -33,7 +34,7 @@ namespace LifegameGame
 			if (Info.IsHost)
 			{
 				Trace.WriteLine("I am host");
-				var listener = new TcpListener(System.Net.IPAddress.IPv6Any, Info.Port);
+				listener = new TcpListener(System.Net.IPAddress.IPv6Any, Info.Port);
 				listener.Server.SetSocketOption(System.Net.Sockets.SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, 0);
 				listener.Start();
 				Trace.WriteLine("accepting...");
@@ -46,7 +47,7 @@ namespace LifegameGame
 			else
 			{
 				Trace.WriteLine("I am client");
-				socket = new TcpClient(AddressFamily.InterNetworkV6);
+				socket = new TcpClient(AddressFamily.InterNetwork);
 				
 				socket.Connect(Info.TargetIP, Info.Port);
 				Trace.WriteLine("connected!");
@@ -99,6 +100,10 @@ namespace LifegameGame
 			base.Dispose();
 			stream.Close();
 			socket.Close();
+			if(listener != null)
+			{ 
+				listener.Stop();
+			}
 		}
 	}
 }
