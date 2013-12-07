@@ -36,6 +36,7 @@ namespace LifegameGame
 				Trace.WriteLine("I am host");
 				listener = new TcpListener(System.Net.IPAddress.IPv6Any, Info.Port);
 				listener.Server.SetSocketOption(System.Net.Sockets.SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, 0);
+				listener.AllowNatTraversal(true);
 				listener.Start();
 				Trace.WriteLine("accepting...");
 				//Trace.WriteLine(listener.LocalEndpoint.ToString());
@@ -47,7 +48,7 @@ namespace LifegameGame
 			else
 			{
 				Trace.WriteLine("I am client");
-				socket = new TcpClient(AddressFamily.InterNetwork);
+				socket = new TcpClient(Info.TargetIP.AddressFamily);
 				
 				socket.Connect(Info.TargetIP, Info.Port);
 				Trace.WriteLine("connected!");
@@ -98,8 +99,15 @@ namespace LifegameGame
 		public override void Dispose()
 		{
 			base.Dispose();
-			stream.Close();
-			socket.Close();
+			if (stream != null)
+			{
+				stream.Close();
+				stream = null;
+			}
+			if (socket != null)
+			{
+				socket.Close();
+			}
 			if(listener != null)
 			{ 
 				listener.Stop();
