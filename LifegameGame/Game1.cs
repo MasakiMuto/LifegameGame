@@ -53,7 +53,7 @@ namespace LifegameGame
 			};
 			Content.RootDirectory = "Content";
 			Argment = arg;
-
+			this.IsMouseVisible = true;
 
 		}
 

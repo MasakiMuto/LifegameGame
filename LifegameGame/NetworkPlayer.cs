@@ -33,19 +33,21 @@ namespace LifegameGame
 			if (Info.IsHost)
 			{
 				Trace.WriteLine("I am host");
-				var listener = new TcpListener(Info.TargetIP, Info.Port);
+				var listener = new TcpListener(System.Net.IPAddress.IPv6Any, Info.Port);
+				listener.Server.SetSocketOption(System.Net.Sockets.SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, 0);
 				listener.Start();
 				Trace.WriteLine("accepting...");
-				Trace.WriteLine(listener.LocalEndpoint.ToString());
+				//Trace.WriteLine(listener.LocalEndpoint.ToString());
 				socket = listener.AcceptTcpClient();
 				Trace.WriteLine("accepted!");
 				Trace.WriteLine(socket.Client.RemoteEndPoint.ToString());
-				listener.Stop();
+				//listener.Stop();
 			}
 			else
 			{
 				Trace.WriteLine("I am client");
-				socket = new TcpClient();
+				socket = new TcpClient(AddressFamily.InterNetworkV6);
+				
 				socket.Connect(Info.TargetIP, Info.Port);
 				Trace.WriteLine("connected!");
 			}
