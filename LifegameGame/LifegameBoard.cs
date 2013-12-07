@@ -10,21 +10,21 @@ namespace LifegameGame
 	{
 
 		public LifegameBoard(SpriteBatch sprite)
-			: base(8, sprite)
+			: base(10, sprite)
 		{
 
 		}
 
 		protected override void Init()
 		{
-			//for (int i = 0; i < Size - 1; i++)
-			//{
-			//	Func<int, GridState> s = x => i % 2 == x ? GridState.Black : GridState.White;
-			//	InitialPut(s(0), new Point(i, 0));
-			//	InitialPut(s(1), new Point(Size - 1, i));
-			//	InitialPut(s(0), new Point(Size - i - 1, Size - 1));
-			//	InitialPut(s(1), new Point(0, Size - i - 1));
-			//}
+			for (int i = 0; i < Size - 1; i++)
+			{
+				Func<int, GridState> s = x => i % 2 == x ? GridState.Black : GridState.White;
+				InitialPut(s(0), new Point(i, 0));
+				InitialPut(s(1), new Point(Size - 1, i));
+				InitialPut(s(0), new Point(Size - i - 1, Size - 1));
+				InitialPut(s(1), new Point(0, Size - i - 1));
+			}
 			InitialPut(GridState.White, new Point(Size / 2, Size / 2));
 			InitialPut(GridState.White, new Point(Size / 2 - 1, Size / 2 - 1));
 			InitialPut(GridState.Black, new Point(Size / 2 - 1, Size / 2));
