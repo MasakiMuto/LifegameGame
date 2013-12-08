@@ -39,6 +39,7 @@
     <Compile Include="GameBoard.cs" />
     <Compile Include="HumanPlayer.cs" />
     <Compile Include="LifegameBoard.cs" />
+    <Compile Include="MinMaxPlayer.cs" />
     <Compile Include="NetworkPlayer.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
