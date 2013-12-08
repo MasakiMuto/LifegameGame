@@ -94,7 +94,9 @@ namespace LifegameGame
 			else
 			{
 				players[0] = new HumanPlayer(board, CellState.White);
-				players[1] = new HumanPlayer(board, CellState.Black);
+				//players[0] = new MinMaxPlayer(board, CellState.White);
+				//players[1] = new HumanPlayer(board, CellState.Black);
+				players[1] = new MinMaxPlayer(board, CellState.Black);
 			}
 			var net = players.OfType<NetworkPlayer>().FirstOrDefault();
 			if (net != null)

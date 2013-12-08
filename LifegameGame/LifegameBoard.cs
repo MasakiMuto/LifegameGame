@@ -91,6 +91,59 @@ namespace LifegameGame
 			}
 		}
 
+		/// <summary>
+		/// 白が優位なら+、黒が優位なら-
+		/// </summary>
+		/// <returns></returns>
+		public override float EvalScore()
+		{
+			float p = 0;
+
+			for (int x = 0; x < Size; x++)
+			{
+				for (int y = 0; y < Size; y++)
+				{
+					var state = CurrentState[x, y];
+					var count = CountAround(new Point(x, y));
+					p += EvalSide(state, count, CellState.White) - EvalSide(state, count, CellState.Black);
+				}
+			}
+			return p;
+		}
+
+		/// <summary>
+		/// セルをあるサイドから見た時の有利値
+		/// </summary>
+		/// <param name="state"></param>
+		/// <param name="count"></param>
+		/// <param name="side"></param>
+		/// <returns></returns>
+		float EvalSide(CellState state, CellCount count, CellState side)
+		{
+			float p = 0;
+			const float CanGet = .5f;
+			const float CanKill = .8f;
+			const float PlayGet = .3f;
+			const float PlayKill = .6f;
+			int same = count.Same(side);
+			int anti = count.Anti(side);
+			if (state == side)
+			{
+				p++;
+			}
+			else
+			{
+				if (anti == 4 || (anti <= 1 && (same == 2 || same == 3)))
+				{
+					p += (state == CellState.None) ? CanGet : CanKill;
+				}
+				else if (anti <= 1 && same == 1)
+				{
+					p += (state == CellState.None) ? PlayGet : PlayKill;
+				}
+			}
+			return p;
+		}
 		
 		public CellCount CountAround(Point p)
 		{

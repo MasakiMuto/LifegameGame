@@ -37,7 +37,7 @@ namespace LifegameGame
 
 		public override int GetHashCode()
 		{
-			return base.GetHashCode();
+			return X + Y * 256;
 		}
 
 		public override string ToString()
@@ -46,15 +46,23 @@ namespace LifegameGame
 		}
 	}
 
-	public struct BoardInstance
+	public class BoardInstance
 	{
 		public int Current;
 		public CellState[][,] Cells;
+		readonly int Size;
 		
 		public BoardInstance(BoardInstance original)
 		{
 			Current = original.Current;
-			Cells = original.Cells.Clone() as CellState[][,];
+			Cells = new CellState[2][,];
+			for (int i = 0; i < 2; i++)
+			{
+				Cells[i] = original.Cells[i].Clone() as CellState[,];
+			}
+			
+			//Cells = original.Cells.Clone() as CellState[][,];
+			Size = Cells[0].GetLength(0);
 		}
 
 		public BoardInstance(int size)
@@ -63,6 +71,30 @@ namespace LifegameGame
 			Cells = new CellState[2][,];
 			Cells[0] = new CellState[size, size];
 			Cells[1] = new CellState[size, size];
+			Size = size;
+		}
+
+		public void SwapTurn()
+		{
+			Current = 1 - Current;
+		}
+
+		public override string ToString()
+		{
+			var s = new StringBuilder(Size * Size);
+			for (int i = 0; i < Size; i++)
+			{
+				for (int j = 0; j < Size; j++)
+				{
+					var a = CurrentState[i, j];
+					s.Append(a == CellState.None ? '.' : (a == CellState.White ? 'o' : 'x'));
+					//s.Append('|');
+				}
+				s.AppendLine();
+				//s.AppendLine(new String('-', Size * 2));
+			}
+			s.AppendLine("#####");
+			return s.ToString();
 		}
 
 		public CellState[,] CurrentState { get { return Cells[Current]; } }
@@ -73,10 +105,12 @@ namespace LifegameGame
 	public abstract class GameBoard : IDisposable
 	{
 		public readonly int Size;
-		BoardInstance board;
+		BoardInstance originalBoard;
 
-		public CellState[,] CurrentState { get { return board.CurrentState; } }
-		protected CellState[,] NextState { get { return board.NextState; } }
+		public BoardInstance PlayingBoard { get; set; }
+
+		public CellState[,] CurrentState { get { return PlayingBoard.CurrentState; } }
+		protected CellState[,] NextState { get { return PlayingBoard.NextState; } }
 
 		Texture2D point;
 		const int DisplaySize = 600;
@@ -90,7 +124,8 @@ namespace LifegameGame
 		public GameBoard(int size, SpriteBatch sprite)
 		{
 			Size = size;
-			board = new BoardInstance(size);
+			originalBoard = new BoardInstance(size);
+			PlayingBoard = originalBoard;
 			Sprite = sprite;
 			point = new Texture2D(sprite.GraphicsDevice, 1, 1);
 			point.SetData(new[] { Color.White });
@@ -123,7 +158,7 @@ namespace LifegameGame
 		{
 			CopyBoard();
 			UpdateByRule(played);
-			board.Current = 1 - board.Current;
+			PlayingBoard.SwapTurn();
 		}
 
 		void CopyBoard()
@@ -157,6 +192,21 @@ namespace LifegameGame
 		{
 			return CurrentState[p.X, p.Y] == CellState.None;
 		}
+
+
+		public BoardInstance VirtualPlay(CellState state, Point p)
+		{
+			var board = new BoardInstance(PlayingBoard);
+			PlayingBoard = board;
+			Play(state, p);
+			return board;
+		}
+
+		public void SetBoardOrigin()
+		{
+			PlayingBoard = originalBoard;
+		}
+
 
 		/// <summary>
 		/// 座標からグリッド位置に変換する。不正位置ならPoint(-1, -1)
@@ -223,21 +273,10 @@ namespace LifegameGame
 
 		public override string ToString()
 		{
-			var s = new StringBuilder(Size * Size);
-			for (int i = 0; i < Size; i++)
-			{
-				for (int j = 0; j < Size; j++)
-				{
-					var a = CurrentState[i, j];
-					s.Append(a == CellState.None ? '.' : (a == CellState.White ? 'o' : 'x'));
-					//s.Append('|');
-				}
-				s.AppendLine();
-				//s.AppendLine(new String('-', Size * 2));
-			}
-			s.AppendLine("#####");
-			return s.ToString();
+			return PlayingBoard.ToString();
 		}
+
+		public abstract float EvalScore();
 	}
 
 }
