@@ -18,10 +18,11 @@ namespace LifegameGame
 
 	public class LaunchArgment
 	{
-		public bool IsOnline;
+		public bool IsOnline { get; set; }
 		public LifegameGame.ConnectionInfo Connection;
-		public PlayerType Player1, Player2;
-		public int BoardSize;
+		public PlayerType Player1 { get; set; }
+		public PlayerType Player2 { get; set; }
+		public int BoardSize { get; set; }
 
 		public LaunchArgment()
 		{
@@ -93,10 +94,28 @@ namespace LifegameGame
 			}
 			else
 			{
-				players[0] = new HumanPlayer(board, CellState.White);
-				//players[0] = new MinMaxPlayer(board, CellState.White);
-				//players[1] = new HumanPlayer(board, CellState.Black);
-				players[1] = new MinMaxPlayer(board, CellState.Black);
+				switch (Argment.Player1)
+				{
+					case PlayerType.Human:
+						players[0] = new HumanPlayer(board, CellState.White);
+						break;
+					case PlayerType.MinMaxAI:
+						players[1] = new MinMaxPlayer(board, CellState.White);
+						break;
+					default:
+						break;
+				}
+				switch (Argment.Player2)
+				{
+					case PlayerType.Human:
+						players[1] = new HumanPlayer(board, CellState.Black);
+						break;
+					case PlayerType.MinMaxAI:
+						players[1] = new HumanPlayer(board, CellState.Black);
+						break;
+					default:
+						break;
+				}
 			}
 			var net = players.OfType<NetworkPlayer>().FirstOrDefault();
 			if (net != null)
