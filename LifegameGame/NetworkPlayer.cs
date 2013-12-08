@@ -23,7 +23,7 @@ namespace LifegameGame
 		TcpListener listener;
 
 
-		public NetworkPlayer(GameBoard board, GridState side, ConnectionInfo info)
+		public NetworkPlayer(GameBoard board, CellState side, ConnectionInfo info)
 			: base(board, side)
 		{
 			Info = info;

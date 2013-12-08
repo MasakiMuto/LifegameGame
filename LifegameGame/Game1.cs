@@ -39,7 +39,7 @@ namespace LifegameGame
 		int current;
 
 		bool isExit;
-		GridState winner;
+		CellState winner;
 		readonly LaunchArgment Argment;
 
 		public Game1(LaunchArgment arg)
@@ -78,21 +78,21 @@ namespace LifegameGame
 			{
 				if (Argment.Connection.IsHost)
 				{
-					players[0] = new HumanPlayer(board, GridState.White);
-					players[1] = new NetworkPlayer(board, GridState.Black, Argment.Connection);
+					players[0] = new HumanPlayer(board, CellState.White);
+					players[1] = new NetworkPlayer(board, CellState.Black, Argment.Connection);
 					players[0].OnPlay += (players[1] as NetworkPlayer).Send;
 				}
 				else
 				{
-					players[0] = new NetworkPlayer(board, GridState.White, Argment.Connection);
-					players[1] = new HumanPlayer(board, GridState.Black);
+					players[0] = new NetworkPlayer(board, CellState.White, Argment.Connection);
+					players[1] = new HumanPlayer(board, CellState.Black);
 					players[1].OnPlay += (players[0] as NetworkPlayer).Send;
 				}
 			}
 			else
 			{
-				players[0] = new HumanPlayer(board, GridState.White);
-				players[1] = new HumanPlayer(board, GridState.Black);
+				players[0] = new HumanPlayer(board, CellState.White);
+				players[1] = new HumanPlayer(board, CellState.Black);
 			}
 			var net = players.OfType<NetworkPlayer>().FirstOrDefault();
 			if (net != null)
@@ -102,7 +102,7 @@ namespace LifegameGame
 			}
 
 			isExit = false;
-			winner = GridState.None;
+			winner = CellState.None;
 			current = 0;
 		}
 

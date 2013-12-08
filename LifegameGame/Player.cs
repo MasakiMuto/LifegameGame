@@ -8,12 +8,12 @@ namespace LifegameGame
 	public abstract class Player : IDisposable
 	{
 		protected readonly GameBoard Board;
-		public readonly GridState Side;
+		public readonly CellState Side;
 		public event Action<Point> OnPlay;
 
-		public Player(GameBoard board, GridState side)
+		public Player(GameBoard board, CellState side)
 		{
-			if (side == GridState.None)
+			if (side == CellState.None)
 			{
 				throw new Exception("Invalid Player Side");
 			}

@@ -6,6 +6,31 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace LifegameGame
 {
+	public struct CellCount
+	{
+		public readonly int White;
+		public readonly int Black;
+
+		public CellCount(int w, int b)
+		{
+			White = w;
+			Black = b;
+		}
+
+		public int Same(CellState side)
+		{
+			if (side == CellState.White) return White;
+			else return Black;
+		}
+
+		public int Anti(CellState side)
+		{
+			if (side == CellState.White) return Black;
+			else return White;
+		}
+	}
+
+
 	public class LifegameBoard : GameBoard
 	{
 
@@ -19,20 +44,20 @@ namespace LifegameGame
 		{
 			for (int i = 0; i < Size - 1; i++)
 			{
-				Func<int, GridState> s = x => i % 2 == x ? GridState.Black : GridState.White;
+				Func<int, CellState> s = x => i % 2 == x ? CellState.Black : CellState.White;
 				InitialPut(s(0), new Point(i, 0));
 				InitialPut(s(1), new Point(Size - 1, i));
 				InitialPut(s(0), new Point(Size - i - 1, Size - 1));
 				InitialPut(s(1), new Point(0, Size - i - 1));
 			}
-			InitialPut(GridState.White, new Point(Size / 2, Size / 2));
-			InitialPut(GridState.White, new Point(Size / 2 - 1, Size / 2 - 1));
-			InitialPut(GridState.Black, new Point(Size / 2 - 1, Size / 2));
-			InitialPut(GridState.Black, new Point(Size / 2, Size / 2 - 1));
+			InitialPut(CellState.White, new Point(Size / 2, Size / 2));
+			InitialPut(CellState.White, new Point(Size / 2 - 1, Size / 2 - 1));
+			InitialPut(CellState.Black, new Point(Size / 2 - 1, Size / 2));
+			InitialPut(CellState.Black, new Point(Size / 2, Size / 2 - 1));
 
 		}
 
-		bool IsFixGrid(Point p)
+		bool IsFixCell(Point p)
 		{
 			return false;
 			//return p.X == 0 || p.X == Size - 1 || p.Y == 0 || p.Y == Size - 1;
@@ -55,10 +80,10 @@ namespace LifegameGame
 			};
 			foreach (var item in pos)
 			{
-				if (!IsFixGrid(item))
+				if (!IsFixCell(item))
 				{
 					var s = Eval(item);
-					if (s != GridState.None)
+					if (s != CellState.None)
 					{
 						Put(s, item);
 					}
@@ -66,7 +91,8 @@ namespace LifegameGame
 			}
 		}
 
-		GridState Eval(Point p)
+		
+		public CellCount CountAround(Point p)
 		{
 			int b = 0, w = 0;
 			var pos = new[]
@@ -84,57 +110,55 @@ namespace LifegameGame
 				}
 				switch (CurrentState[item.X, item.Y])
 				{
-					case GridState.Black:
+					case CellState.Black:
 						b++;
 						break;
-					case GridState.White:
+					case CellState.White:
 						w++;
 						break;
 					default:
 						break;
-				} 
+				}
 			}
-			if (b == 3 || (b == 2 && w < 2))
+			return new CellCount(w, b);
+		}
+
+		CellState Eval(Point p)
+		{
+			var count = CountAround(p);
+			if (count.Black == 3 || (count.Black == 2 && count.White < 2) || count.White == 4)
 			{
-				return GridState.Black;
+				return CellState.Black;
 			}
-			if (w == 3 || (w == 2 && b < 2))
+			if (count.White == 3 || (count.White == 2 && count.Black < 2) || count.Black == 4)
 			{
-				return GridState.White;
+				return CellState.White;
 			}
-			if (b == 4)
-			{
-				return GridState.White;
-			}
-			if (w == 4)
-			{
-				return GridState.Black;
-			}
-			return GridState.None;
+			return CellState.None;
 		}
 
 
 		public override bool IsExit()
 		{
-			return CurrentState.OfType<GridState>().All(x => x != GridState.None);
+			return CurrentState.OfType<CellState>().All(x => x != CellState.None);
 		}
 
-		public override GridState GetWinner()
+		public override CellState GetWinner()
 		{
-			var s = CurrentState.OfType<GridState>();
-			int b = s.Count(x => x == GridState.Black);
-			int w = s.Count(x => x == GridState.White);
+			var s = CurrentState.OfType<CellState>();
+			int b = s.Count(x => x == CellState.Black);
+			int w = s.Count(x => x == CellState.White);
 			if (b > w)
 			{
-				return GridState.Black;
+				return CellState.Black;
 			}
 			else if (w > b)
 			{
-				return GridState.White;
+				return CellState.White;
 			}
 			else
 			{
-				return GridState.None;
+				return CellState.None;
 			}
 		}
 	}

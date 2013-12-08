@@ -13,7 +13,7 @@ namespace LifegameGame
 
 		bool lastPush;
 
-		public HumanPlayer(GameBoard board, GridState side)
+		public HumanPlayer(GameBoard board, CellState side)
 			: base(board, side)
 		{
 
@@ -22,7 +22,7 @@ namespace LifegameGame
 		public override bool Update()
 		{
 			var input = Mouse.GetState();
-			var p = Board.GetGrid(new Vector2(input.X, input.Y));
+			var p = Board.GetCellPosition(new Vector2(input.X, input.Y));
 			Board.CursorSide = Side;
 			Board.Cursor = p;
 			if (input.LeftButton == ButtonState.Pressed)
