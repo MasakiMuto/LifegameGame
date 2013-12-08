@@ -24,6 +24,26 @@ namespace LifegameGame
 			X = x;
 			Y = y;
 		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj is Point)
+			{
+				Point p = (Point)obj;
+				return X == p.X && Y == p.Y;
+			}
+			return false;
+		}
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+
+		public override string ToString()
+		{
+			return String.Format("({0},{1})", X, Y);
+		}
 	}
 
 	public struct BoardInstance
@@ -199,6 +219,24 @@ namespace LifegameGame
 				point = null;
 				GC.SuppressFinalize(this);
 			}
+		}
+
+		public override string ToString()
+		{
+			var s = new StringBuilder(Size * Size);
+			for (int i = 0; i < Size; i++)
+			{
+				for (int j = 0; j < Size; j++)
+				{
+					var a = CurrentState[i, j];
+					s.Append(a == CellState.None ? '.' : (a == CellState.White ? 'o' : 'x'));
+					//s.Append('|');
+				}
+				s.AppendLine();
+				//s.AppendLine(new String('-', Size * 2));
+			}
+			s.AppendLine("#####");
+			return s.ToString();
 		}
 	}
 

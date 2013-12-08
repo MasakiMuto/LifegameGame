@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace LifegameGame
 {
 	public class MinMaxPlayer : Player
 	{
+
 
 		public MinMaxPlayer(GameBoard board, CellState side)
 			: base(board, side)
@@ -16,7 +18,23 @@ namespace LifegameGame
 
 		public override bool Update()
 		{
-			throw new NotImplementedException();
+			Play(Think(1));
+			return true;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="depth">ツリーを展開する最大深さ</param>
+		/// <returns></returns>
+		Point Think(int depth)
+		{
+			var watch = new Stopwatch();
+			watch.Start();
+
+			watch.Stop();
+			Trace.WriteLine("MinMax Thinking Time=" + watch.Elapsed.ToString());
+			throw new Exception();
 		}
 
 		/// <summary>

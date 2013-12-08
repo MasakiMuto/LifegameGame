@@ -34,6 +34,7 @@ namespace LifegameGame
 				throw new Exception(String.Format( "Cannot play on ({0},{1})", p.X, p.Y));
 			}
 			Board.Play(Side, p);
+			System.Diagnostics.Trace.Write(Board.ToString());
 			if (OnPlay != null)
 			{
 				OnPlay(p);

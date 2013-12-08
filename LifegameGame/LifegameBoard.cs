@@ -34,8 +34,8 @@ namespace LifegameGame
 	public class LifegameBoard : GameBoard
 	{
 
-		public LifegameBoard(SpriteBatch sprite)
-			: base(10, sprite)
+		public LifegameBoard(SpriteBatch sprite, int size)
+			: base(size, sprite)
 		{
 
 		}

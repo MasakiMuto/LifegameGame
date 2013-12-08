@@ -13,7 +13,7 @@ namespace LifegameGame
 	public enum PlayerType
 	{
 		Human,
-		AI,
+		MinMaxAI,
 	}
 
 	public class LaunchArgment
@@ -21,12 +21,14 @@ namespace LifegameGame
 		public bool IsOnline;
 		public LifegameGame.ConnectionInfo Connection;
 		public PlayerType Player1, Player2;
+		public int BoardSize;
 
 		public LaunchArgment()
 		{
 			IsOnline = false;
 			Player1 = PlayerType.Human;
 			Player2 = PlayerType.Human;
+			BoardSize = 8;
 		}
 	}
 
@@ -72,7 +74,7 @@ namespace LifegameGame
 		void Init()
 		{
 			Window.Title = "Lifegame Game";
-			board = new LifegameBoard(spriteBatch);
+			board = new LifegameBoard(spriteBatch, Argment.BoardSize);
 			players = new Player[2];
 			if (Argment.IsOnline)
 			{

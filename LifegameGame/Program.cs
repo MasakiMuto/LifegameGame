@@ -20,6 +20,7 @@ namespace LifegameGame
 		[STAThread]
 		static void Main()
 		{
+			SetTrace();
 			using (game = new Game1(new LaunchArgment()))
 			{
 				game.Run();
