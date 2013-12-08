@@ -7,8 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace LifegameGame
 {
-
-	public enum CellState
+	public enum CellState : sbyte
 	{
 		None = 0,
 		Black = -1,
@@ -27,14 +26,37 @@ namespace LifegameGame
 		}
 	}
 
+	public struct BoardInstance
+	{
+		public int Current;
+		public CellState[][,] Cells;
+		
+		public BoardInstance(BoardInstance original)
+		{
+			Current = original.Current;
+			Cells = original.Cells.Clone() as CellState[][,];
+		}
+
+		public BoardInstance(int size)
+		{
+			Current = 0;
+			Cells = new CellState[2][,];
+			Cells[0] = new CellState[size, size];
+			Cells[1] = new CellState[size, size];
+		}
+
+		public CellState[,] CurrentState { get { return Cells[Current]; } }
+		public CellState[,] NextState { get { return Cells[1 - Current]; } }
+
+	}
+
 	public abstract class GameBoard : IDisposable
 	{
 		public readonly int Size;
-		CellState[][,] cells;
-		int current;
+		BoardInstance board;
 
-		public CellState[,] CurrentState { get { return cells[current]; } }
-		protected CellState[,] NextState { get { return cells[1 - current]; } }
+		public CellState[,] CurrentState { get { return board.CurrentState; } }
+		protected CellState[,] NextState { get { return board.NextState; } }
 
 		Texture2D point;
 		const int DisplaySize = 600;
@@ -48,10 +70,7 @@ namespace LifegameGame
 		public GameBoard(int size, SpriteBatch sprite)
 		{
 			Size = size;
-			cells = new CellState[2][,];
-			cells[0] = new CellState[Size, Size];
-			cells[1] = new CellState[Size, Size];
-			current = 0;
+			board = new BoardInstance(size);
 			Sprite = sprite;
 			point = new Texture2D(sprite.GraphicsDevice, 1, 1);
 			point.SetData(new[] { Color.White });
@@ -84,7 +103,7 @@ namespace LifegameGame
 		{
 			CopyBoard();
 			UpdateByRule(played);
-			current = 1 - current;
+			board.Current = 1 - board.Current;
 		}
 
 		void CopyBoard()
