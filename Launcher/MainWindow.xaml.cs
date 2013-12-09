@@ -21,6 +21,7 @@ namespace Launcher
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -35,10 +36,8 @@ namespace Launcher
 		[STAThread]
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-			var arg = new LaunchArgment()
-			{
-				IsOnline = this.IsOnline.IsChecked.Value,
-			};
+			bool isOnline = bool.Parse((sender as Button).Tag as string);
+			var arg = this.DataContext as LaunchArgment;
 			if (arg.IsOnline)
 			{
 				arg.Connection = new ConnectionInfo()
@@ -47,6 +46,11 @@ namespace Launcher
 					Port = Int32.Parse(this.PortNumber.Text),
 					TargetIP = System.Net.IPAddress.Parse(this.IPAddress.Text)
 				};
+			}
+			else
+			{
+			//arg.Player1 = 
+				
 			}
 			using (var game = new LifegameGame.Game1(arg))
 			{
