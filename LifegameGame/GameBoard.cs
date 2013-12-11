@@ -215,7 +215,7 @@ namespace LifegameGame
 		/// <returns></returns>
 		public Point GetCellPosition(Vector2 pos)
 		{
-			pos = Vector2.Clamp(pos, Vector2.Zero, new Vector2(DisplaySize - 1, DisplaySize - 1));
+			pos = Vector2.Clamp(pos, Vector2.Zero, new Vector2(CellSize * Size - 1));
 			return new Point((int)(pos.X / CellSize), (int)(pos.Y / CellSize));
 		}
 
