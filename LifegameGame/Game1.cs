@@ -14,6 +14,7 @@ namespace LifegameGame
 	{
 		Human,
 		MinMaxAI,
+		AlphaBetaAI,
 	}
 
 	public class LaunchArgment
@@ -23,6 +24,8 @@ namespace LifegameGame
 		public PlayerType Player1 { get; set; }
 		public PlayerType Player2 { get; set; }
 		public int BoardSize { get; set; }
+		public int ThinkDepth1 { get; set; }
+		public int ThinkDepth2 { get; set; }
 
 		public LaunchArgment()
 		{
@@ -30,6 +33,8 @@ namespace LifegameGame
 			Player1 = PlayerType.Human;
 			Player2 = PlayerType.Human;
 			BoardSize = 8;
+			ThinkDepth1 = 3;
+			ThinkDepth2 = 3;
 		}
 	}
 
@@ -100,7 +105,10 @@ namespace LifegameGame
 						players[0] = new HumanPlayer(board, CellState.White);
 						break;
 					case PlayerType.MinMaxAI:
-						players[0] = new MinMaxPlayer(board, CellState.White);
+						players[0] = new MinMaxPlayer(board, CellState.White, Argment.ThinkDepth1, false);
+						break;
+					case PlayerType.AlphaBetaAI:
+						players[0] = new MinMaxPlayer(board, CellState.White, Argment.ThinkDepth1, true);
 						break;
 					default:
 						break;
@@ -111,7 +119,10 @@ namespace LifegameGame
 						players[1] = new HumanPlayer(board, CellState.Black);
 						break;
 					case PlayerType.MinMaxAI:
-						players[1] = new MinMaxPlayer(board, CellState.Black);
+						players[1] = new MinMaxPlayer(board, CellState.Black, Argment.ThinkDepth2, false);
+						break;
+					case PlayerType.AlphaBetaAI:
+						players[1] = new MinMaxPlayer(board, CellState.White, Argment.ThinkDepth1, true);
 						break;
 					default:
 						break;

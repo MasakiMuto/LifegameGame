@@ -9,17 +9,19 @@ namespace LifegameGame
 	using PointScoreDictionary = Dictionary<Point, float>;
 	public class MinMaxPlayer : Player
 	{
+		readonly int ThinkDepth;
+		readonly bool BranchCutEnable;
 
-
-		public MinMaxPlayer(GameBoard board, CellState side)
+		public MinMaxPlayer(GameBoard board, CellState side, int thinkDepth, bool branchCutEnable)
 			: base(board, side)
 		{
-
+			ThinkDepth = thinkDepth;
+			BranchCutEnable = branchCutEnable;
 		}
 
 		public override bool Update()
 		{
-			Play(Think(5));
+			Play(Think(ThinkDepth));
 			return true;
 		}
 
