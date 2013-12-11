@@ -19,7 +19,7 @@ namespace LifegameGame
 
 		public override bool Update()
 		{
-			Play(Think(1));
+			Play(Think(5));
 			return true;
 		}
 
@@ -35,27 +35,20 @@ namespace LifegameGame
 			watch.Start();
 
 			var list = new PointScoreDictionary();
+
 			foreach (var p in GetPlayablePoints())
 			{
 				if (Board.CanPlay(p))
 				{
-					var b = Board.VirtualPlay(Side, p);
-					float score = Board.EvalScore();
-					//if (this.Side == CellState.Black)
-					//{
-					//	score *= -1;
-					//}
-					list[p] = score;
+					list[p] = EvalPosition(Board.PlayingBoard, p, depth, this.Side);
 					Board.SetBoardOrigin();
 				}
 			}
-			
+
 			var res = this.Side == CellState.White ? GetMaxPoint(list) : GetMinPoint(list);
 
 			watch.Stop();
 			Trace.WriteLine("MinMax Thinking Time=" + watch.Elapsed.ToString());
-			//Trace.WriteLine("I play " + res.Key.ToString());
-			//Trace.WriteLine(String.Format("Score {0}→{1}", currentScore, res.Value));
 			return res.Key;
 		}
 
@@ -73,19 +66,44 @@ namespace LifegameGame
 		/// </summary>
 		/// <param name="p"></param>
 		/// <param name="isMin">minを求めるならtrue</param>
-		float EvalPosition(BoardInstance board, Point p, int depth)
+		float EvalPosition(BoardInstance board, Point p, int depth, CellState side)
 		{
 			Board.PlayingBoard = board;
 			Debug.Assert(Board.CanPlay(p));
+			var next = Board.VirtualPlay(side, p);
+			if (Board.IsExit())
+			{
+				if (Board.GetWinner() == CellState.White)
+				{
+					return GameBoard.WinnerBonus;
+				}
+				else
+				{
+					return -GameBoard.WinnerBonus;
+				}
+			}
 			if (depth == 1)
 			{
 				return Board.EvalScore();
 			}
 			else
 			{
-
+				List<float> scores = new List<float>();
+				foreach (var item in GetPlayablePoints())
+				{
+					//var b = Board.VirtualPlay(Side, item);
+					//float score = Board.EvalScore();
+					scores.Add(EvalPosition(next, item, depth - 1, side == CellState.White ? CellState.Black : CellState.White));
+				}
+				if (this.Side != side)
+				{
+					return scores.Min();
+				}
+				else
+				{
+					return scores.Max();
+				}
 			}
-			throw new NotImplementedException();
 		}
 
 		KeyValuePair<Point, float> GetMaxPoint(PointScoreDictionary dict)

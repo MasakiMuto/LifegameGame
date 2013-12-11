@@ -121,6 +121,8 @@ namespace LifegameGame
 		public Point Cursor { get; set; }
 		public CellState CursorSide { get; set; }
 
+		public const float WinnerBonus = 1000;
+
 		public GameBoard(int size, SpriteBatch sprite)
 		{
 			Size = size;
