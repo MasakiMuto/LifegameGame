@@ -34,21 +34,15 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <GroupBox Header="Player1">
+                    <GroupBox x:Name="player1Group" Header="Player1">
                         <StackPanel Orientation="Vertical">
-
-                            <RadioButton Content="Human" IsChecked="True" GroupName="Player1"/>
-                            <RadioButton Content="MinMax AI" GroupName="Player1"/>
-                            <ListBox Height="100" IsSynchronizedWithCurrentItem="False">
-                                <ListBoxItem/>
-                            </ListBox>
+                            <ListBox Height="100"/>
 
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Header="Player2" Grid.Column="1">
+                    <GroupBox x:Name="player2Group" Header="Player2" Grid.Column="1">
                         <StackPanel Orientation="Vertical">
-                            <RadioButton Content="Human" IsChecked="True" GroupName="Player2"/>
-                            <RadioButton Content="MinMax AI" GroupName="Player2"/>
+                            <ListBox Height="100"/>
                         </StackPanel>
                     </GroupBox>
                 </Grid>

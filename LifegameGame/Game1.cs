@@ -100,7 +100,7 @@ namespace LifegameGame
 						players[0] = new HumanPlayer(board, CellState.White);
 						break;
 					case PlayerType.MinMaxAI:
-						players[1] = new MinMaxPlayer(board, CellState.White);
+						players[0] = new MinMaxPlayer(board, CellState.White);
 						break;
 					default:
 						break;
@@ -111,7 +111,7 @@ namespace LifegameGame
 						players[1] = new HumanPlayer(board, CellState.Black);
 						break;
 					case PlayerType.MinMaxAI:
-						players[1] = new HumanPlayer(board, CellState.Black);
+						players[1] = new MinMaxPlayer(board, CellState.Black);
 						break;
 					default:
 						break;
