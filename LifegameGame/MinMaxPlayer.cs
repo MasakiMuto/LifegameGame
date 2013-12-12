@@ -47,7 +47,7 @@ namespace LifegameGame
 		/// </summary>
 		/// <param name="p"></param>
 		/// <param name="isMin">minを求めるならtrue</param>
-		float EvalPosition(BoardInstance board, Point p, int depth, CellState side)
+		protected virtual float EvalPosition(BoardInstance board, Point p, int depth, CellState side)
 		{
 			EvalCount++;
 			Board.PlayingBoard = board;
@@ -70,22 +70,25 @@ namespace LifegameGame
 			}
 			else
 			{
-				List<float> scores = new List<float>();
-				foreach (var item in GetPlayablePoints())
+				return GetBestChild(next, depth, side);
+			}
+		}
+
+		protected virtual float GetBestChild(BoardInstance next, int depth, CellState side)
+		{
+			List<float> scores = new List<float>();
+			float current = (this.Side == side ? float.MinValue : float.MaxValue);
+			foreach (var item in GetPlayablePoints())
+			{
+				//var b = Board.VirtualPlay(Side, item);
+				//float score = Board.EvalScore();
+				float score = (EvalPosition(next, item, depth - 1, side == CellState.White ? CellState.Black : CellState.White));
+				if ((this.Side == side && score > current) || (this.Side != side && score < current))
 				{
-					//var b = Board.VirtualPlay(Side, item);
-					//float score = Board.EvalScore();
-					scores.Add(EvalPosition(next, item, depth - 1, side == CellState.White ? CellState.Black : CellState.White));
-				}
-				if (this.Side != side)
-				{
-					return scores.Min();
-				}
-				else
-				{
-					return scores.Max();
+					current = score;
 				}
 			}
+			return current;
 		}
 
 		
