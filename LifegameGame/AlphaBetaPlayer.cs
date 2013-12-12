@@ -22,7 +22,7 @@ namespace LifegameGame
 			var list = new PointScoreDictionary();
 
 			float alpha = float.MinValue;
-			foreach (var p in GetPlayablePoints())
+			foreach (var p in GetPlayablePoints().ToArray())
 			{
 				float score = EvalPosition(Board.PlayingBoard, p, ThinkDepth, this.Side, alpha);
 				list[p] = score;
@@ -49,7 +49,6 @@ namespace LifegameGame
 			{
 				if (Board.GetWinner() == this.Side)
 				{
-					Trace.WriteLine("I Win");
 					return GameBoard.WinnerBonus;
 				}
 				else
@@ -63,9 +62,9 @@ namespace LifegameGame
 			}
 			else
 			{
-				bool isMax = this.Side == side;
+				bool isMax = this.Side != side;
 				float current = (isMax ? float.MinValue : float.MaxValue);
-				foreach (var item in GetPlayablePoints())
+				foreach (var item in GetPlayablePoints().ToArray())
 				{
 					float score = EvalPosition(next, item, depth - 1, side == CellState.White ? CellState.Black : CellState.White, current);
 

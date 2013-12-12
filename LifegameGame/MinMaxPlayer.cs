@@ -28,17 +28,14 @@ namespace LifegameGame
 		protected override Point Think()
 		{
 			var list = new PointScoreDictionary();
-			var tree = new TreeNode<float>(0, null);
-			foreach (var p in GetPlayablePoints())
+			foreach (var p in GetPlayablePoints().ToArray())
 			{
-				var score = EvalPosition(Board.PlayingBoard, p, ThinkDepth, this.Side, tree);
+				var score = EvalPosition(Board.PlayingBoard, p, ThinkDepth, this.Side);
 				list[p] = score;
 				Board.SetBoardOrigin();
 			}
 
 			var res = GetMaxPoint(list);
-			tree.Value = res.Value;
-			System.IO.File.WriteAllText("tree.txt", tree.ToString());
 			return res.Key;
 		}
 
@@ -49,7 +46,7 @@ namespace LifegameGame
 		/// </summary>
 		/// <param name="p"></param>
 		/// <returns>自分にとって有利なほど+</returns>
-		protected virtual float EvalPosition(BoardInstance board, Point p, int depth, CellState side, TreeNode<float> t)
+		protected virtual float EvalPosition(BoardInstance board, Point p, int depth, CellState side)
 		{
 			EvalCount++;
 			Board.PlayingBoard = board;
@@ -60,36 +57,31 @@ namespace LifegameGame
 				if (Board.GetWinner() == this.Side)
 				{
 					//Trace.WriteLine("I Win");
-					t.AddChild(GameBoard.WinnerBonus);
 					return GameBoard.WinnerBonus;
 				}
 				else
 				{
-					t.AddChild(-GameBoard.WinnerBonus);
 					return -GameBoard.WinnerBonus;
 				}
 			}
 			if (depth == 1)
 			{
 				var s = Board.EvalScore() * (int)(this.Side);
-				t.AddChild(s);
 				return s;
 			}
 			else
 			{
 				bool isMax = this.Side != side;
 				float current = (isMax ? float.MinValue : float.MaxValue);
-				var tr = t.AddChild(0);
 				
 				foreach (var item in GetPlayablePoints().ToArray())
 				{
-					float score = EvalPosition(next, item, depth - 1, side == CellState.White ? CellState.Black : CellState.White, tr);
+					float score = EvalPosition(next, item, depth - 1, side == CellState.White ? CellState.Black : CellState.White);
 					if ((isMax && score > current) || (!isMax && score < current))
 					{
 						current = score;
 					}
 				}
-				tr.Value = current;
 				return current;
 			}
 		}
