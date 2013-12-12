@@ -10,13 +10,11 @@ namespace LifegameGame
 	public class MinMaxPlayer : Player
 	{
 		readonly int ThinkDepth;
-		readonly bool BranchCutEnable;
 
-		public MinMaxPlayer(GameBoard board, CellState side, int thinkDepth, bool branchCutEnable)
+		public MinMaxPlayer(GameBoard board, CellState side, int thinkDepth)
 			: base(board, side)
 		{
 			ThinkDepth = thinkDepth;
-			BranchCutEnable = branchCutEnable;
 		}
 
 		public override bool Update()

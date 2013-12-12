@@ -99,33 +99,27 @@ namespace LifegameGame
 			}
 			else
 			{
-				switch (Argment.Player1)
+				var a = new[]
+					{
+						Tuple.Create(Argment.Player1, Argment.ThinkDepth1, CellState.White),
+						Tuple.Create(Argment.Player2, Argment.ThinkDepth2, CellState.Black)
+					};
+				for (int i = 0; i < 2; i++)
 				{
-					case PlayerType.Human:
-						players[0] = new HumanPlayer(board, CellState.White);
-						break;
-					case PlayerType.MinMaxAI:
-						players[0] = new MinMaxPlayer(board, CellState.White, Argment.ThinkDepth1, false);
-						break;
-					case PlayerType.AlphaBetaAI:
-						players[0] = new MinMaxPlayer(board, CellState.White, Argment.ThinkDepth1, true);
-						break;
-					default:
-						break;
-				}
-				switch (Argment.Player2)
-				{
-					case PlayerType.Human:
-						players[1] = new HumanPlayer(board, CellState.Black);
-						break;
-					case PlayerType.MinMaxAI:
-						players[1] = new MinMaxPlayer(board, CellState.Black, Argment.ThinkDepth2, false);
-						break;
-					case PlayerType.AlphaBetaAI:
-						players[1] = new MinMaxPlayer(board, CellState.White, Argment.ThinkDepth1, true);
-						break;
-					default:
-						break;
+					switch (a[i].Item1)
+					{
+						case PlayerType.Human:
+							players[i] = new HumanPlayer(board, a[i].Item3);
+							break;
+						case PlayerType.MinMaxAI:
+							players[i] = new MinMaxPlayer(board, a[i].Item3, a[i].Item2);
+							break;
+						case PlayerType.AlphaBetaAI:
+							players[i] = new AlphaBetaPlayer(board, a[i].Item3, a[i].Item2);
+							break;
+						default:
+							break;
+					}
 				}
 			}
 			var net = players.OfType<NetworkPlayer>().FirstOrDefault();
