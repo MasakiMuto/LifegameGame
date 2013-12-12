@@ -221,7 +221,7 @@ namespace LifegameGame
 					var lt = GetPosition(new Point(i, j));
 					var rb = GetPosition(new Point(i + 1, j + 1));
 					Sprite.Draw(pixel, new Rectangle((int)lt.X, (int)lt.Y, (int)CellSize - 1, (int)CellSize - 1), Color.DarkGreen);
-					var state = CurrentState[i, j];
+					var state = originalBoard.Cells[i, j];
 					if (state != CellState.None)
 					{
 						DrawStone(new Point(i, j), state == CellState.Black ? Color.Black : Color.White);
