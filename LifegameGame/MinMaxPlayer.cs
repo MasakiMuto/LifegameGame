@@ -11,13 +11,15 @@ namespace LifegameGame
 	{
 		protected readonly int ThinkDepth;
 
+		TreeNode<float> tree;
+
 		public MinMaxPlayer(GameBoard board, CellState side, int thinkDepth)
 			: base(board, side)
 		{
 			ThinkDepth = thinkDepth;
 		}
 
-		
+
 
 		/// <summary>
 		/// 最善手を考える
@@ -26,29 +28,30 @@ namespace LifegameGame
 		/// <returns></returns>
 		protected override Point Think()
 		{
-			var currentScore = Board.EvalScore();
 			var list = new PointScoreDictionary();
-
+			tree = new TreeNode<float>(0, null);
 			foreach (var p in GetPlayablePoints())
 			{
-				list[p] = EvalPosition(Board.PlayingBoard, p, ThinkDepth, this.Side);
+				list[p] = EvalPosition(Board.PlayingBoard, p, ThinkDepth, this.Side, tree);
 				Board.SetBoardOrigin();
 			}
 
 			var res = GetMaxPoint(list);
-
+			tree.Value = res.Value;
+			System.IO.File.WriteAllText("tree.txt", tree.ToString());
 			return res.Key;
 		}
 
-		
+
 
 		/// <summary>
 		/// そこに打った時の評価値の計算
 		/// </summary>
 		/// <param name="p"></param>
 		/// <returns>自分にとって有利なほど+</returns>
-		protected virtual float EvalPosition(BoardInstance board, Point p, int depth, CellState side)
+		protected virtual float EvalPosition(BoardInstance board, Point p, int depth, CellState side, TreeNode<float> t)
 		{
+			var tr = t.AddChild(0);
 			EvalCount++;
 			Board.PlayingBoard = board;
 			Debug.Assert(Board.CanPlay(p));
@@ -57,7 +60,7 @@ namespace LifegameGame
 			{
 				if (Board.GetWinner() == this.Side)
 				{
-					Trace.WriteLine("I Win");
+					//Trace.WriteLine("I Win");
 					return GameBoard.WinnerBonus;
 				}
 				else
@@ -67,33 +70,26 @@ namespace LifegameGame
 			}
 			if (depth == 1)
 			{
-				return Board.EvalScore() * (int)(this.Side);
+				var s = Board.EvalScore() * (int)(this.Side);
+				tr.Value = s;
+				return s;
 			}
 			else
 			{
-				return GetBestChild(next, depth, side);
-			}
-		}
-
-		protected float GetBestChild(BoardInstance next, int depth, CellState side)
-		{
-			bool isMax = this.Side == side;
-			List<float> scores = new List<float>();
-			float current = (isMax ? float.MinValue : float.MaxValue);
-			foreach (var item in GetPlayablePoints())
-			{
-				//var b = Board.VirtualPlay(Side, item);
-				//float score = Board.EvalScore();
-				float score = (EvalPosition(next, item, depth - 1, side == CellState.White ? CellState.Black : CellState.White));
-				if ((isMax && score > current) || (!isMax && score < current))
+				bool isMax = this.Side != side;
+				float current = (isMax ? float.MinValue : float.MaxValue);
+				foreach (var item in GetPlayablePoints())
 				{
-					current = score;
+					float score = EvalPosition(next, item, depth - 1, side == CellState.White ? CellState.Black : CellState.White, tr);
+					if ((isMax && score > current) || (!isMax && score < current))
+					{
+						current = score;
+					}
 				}
+				tr.Value = current;
+				return current;
 			}
-			return current;
 		}
-
-		
 
 	}
 }

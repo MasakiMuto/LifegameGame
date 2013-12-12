@@ -51,7 +51,7 @@
                     </GroupBox>
                 </Grid>
                 <TextBlock Text="{Binding BoardSize, StringFormat=BoardSize: {0}}"/>
-                <Slider Minimum="8" Maximum="16" LargeChange="2" IsSnapToTickEnabled="True" SmallChange="2" TickFrequency="2" Value="{Binding BoardSize}"/>
+                <Slider Minimum="6" Maximum="16" LargeChange="2" IsSnapToTickEnabled="True" SmallChange="2" TickFrequency="2" Value="{Binding BoardSize}"/>
 
                 <Button Content="Local Play" Tag="false" Click="Button_Click"/>
             </StackPanel>

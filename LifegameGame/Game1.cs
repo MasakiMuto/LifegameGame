@@ -79,6 +79,7 @@ namespace LifegameGame
 
 		void Init()
 		{
+			Trace.WriteLine("Start Game");
 			Window.Title = "Lifegame Game";
 			board = new LifegameBoard(spriteBatch, Argment.BoardSize);
 			players = new Player[2];
