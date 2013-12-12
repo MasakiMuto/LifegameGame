@@ -112,7 +112,7 @@ namespace LifegameGame
 		public CellState[,] CurrentState { get { return PlayingBoard.CurrentState; } }
 		protected CellState[,] NextState { get { return PlayingBoard.NextState; } }
 
-		Texture2D point;
+		Texture2D pixel;
 		const int DisplaySize = 600;
 		readonly float CellSize;
 
@@ -129,8 +129,8 @@ namespace LifegameGame
 			originalBoard = new BoardInstance(size);
 			PlayingBoard = originalBoard;
 			Sprite = sprite;
-			point = new Texture2D(sprite.GraphicsDevice, 1, 1);
-			point.SetData(new[] { Color.White });
+			pixel = new Texture2D(sprite.GraphicsDevice, 1, 1);
+			pixel.SetData(new[] { Color.White });
 			CellSize = DisplaySize / Size;
 			Init();
 		}
@@ -224,14 +224,14 @@ namespace LifegameGame
 		public void Draw()
 		{
 			Sprite.Begin();
-			Sprite.Draw(point, new Rectangle(0, 0, DisplaySize, DisplaySize), Color.Black);
+			Sprite.Draw(pixel, new Rectangle(0, 0, DisplaySize, DisplaySize), Color.Black);
 			for (int i = 0; i < Size; i++)
 			{
 				for (int j = 0; j < Size; j++)
 				{
 					var lt = GetPosition(new Point(i, j));
 					var rb = GetPosition(new Point(i + 1, j + 1));
-					Sprite.Draw(point, new Rectangle((int)lt.X, (int)lt.Y, (int)CellSize - 1, (int)CellSize - 1), Color.DarkGreen);
+					Sprite.Draw(pixel, new Rectangle((int)lt.X, (int)lt.Y, (int)CellSize - 1, (int)CellSize - 1), Color.DarkGreen);
 					var state = CurrentState[i, j];
 					if (state != CellState.None)
 					{
@@ -249,7 +249,7 @@ namespace LifegameGame
 		void DrawStone(Point p, Color color)
 		{
 			var lt = GetPosition(p);
-			Sprite.Draw(point, new Rectangle((int)lt.X + 8, (int)lt.Y + 8, (int)CellSize - 16, (int)CellSize - 16), color);
+			Sprite.Draw(pixel, new Rectangle((int)lt.X + 8, (int)lt.Y + 8, (int)CellSize - 16, (int)CellSize - 16), color);
 		}
 
 		Vector2 GetPosition(Point p)
@@ -265,10 +265,10 @@ namespace LifegameGame
 
 		public void Dispose()
 		{
-			if (point != null)
+			if (pixel != null)
 			{
-				point.Dispose();
-				point = null;
+				pixel.Dispose();
+				pixel = null;
 				GC.SuppressFinalize(this);
 			}
 		}
