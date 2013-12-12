@@ -108,6 +108,22 @@ namespace LifegameGame
 					p += EvalSide(state, count, CellState.White) - EvalSide(state, count, CellState.Black);
 				}
 			}
+			if (IsExit())
+			{
+				switch (GetWinner())
+				{
+					case CellState.None:
+						break;
+					case CellState.Black:
+						p -= WinnerBonus;
+						break;
+					case CellState.White:
+						p += WinnerBonus;
+						break;
+					default:
+						break;
+				}
+			}
 			return p;
 		}
 
