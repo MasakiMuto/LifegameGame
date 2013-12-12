@@ -48,35 +48,21 @@ namespace LifegameGame
 
 	public class BoardInstance
 	{
-		public int Current;
-		public CellState[][,] Cells;
+		public CellState[,] Cells;
 		readonly int Size;
 		
 		public BoardInstance(BoardInstance original)
 		{
-			Current = original.Current;
-			Cells = new CellState[2][,];
-			for (int i = 0; i < 2; i++)
-			{
-				Cells[i] = original.Cells[i].Clone() as CellState[,];
-			}
+			Cells = original.Cells.Clone() as CellState[,];
 			
 			//Cells = original.Cells.Clone() as CellState[][,];
-			Size = Cells[0].GetLength(0);
+			Size = Cells.GetLength(0);
 		}
 
 		public BoardInstance(int size)
 		{
-			Current = 0;
-			Cells = new CellState[2][,];
-			Cells[0] = new CellState[size, size];
-			Cells[1] = new CellState[size, size];
+			Cells = new CellState[size, size];
 			Size = size;
-		}
-
-		public void SwapTurn()
-		{
-			Current = 1 - Current;
 		}
 
 		public override string ToString()
@@ -86,7 +72,7 @@ namespace LifegameGame
 			{
 				for (int j = 0; j < Size; j++)
 				{
-					var a = CurrentState[i, j];
+					var a = Cells[i, j];
 					s.Append(a == CellState.None ? '.' : (a == CellState.White ? 'o' : 'x'));
 					//s.Append('|');
 				}
@@ -97,9 +83,7 @@ namespace LifegameGame
 			return s.ToString();
 		}
 
-		public CellState[,] CurrentState { get { return Cells[Current]; } }
-		public CellState[,] NextState { get { return Cells[1 - Current]; } }
-
+		
 	}
 
 	public abstract class GameBoard : IDisposable
@@ -109,8 +93,10 @@ namespace LifegameGame
 
 		public BoardInstance PlayingBoard { get; set; }
 
-		public CellState[,] CurrentState { get { return PlayingBoard.CurrentState; } }
-		protected CellState[,] NextState { get { return PlayingBoard.NextState; } }
+		CellState[,] nextCells;
+
+		public CellState[,] CurrentState { get { return PlayingBoard.Cells; } }
+		protected CellState[,] NextState { get { return nextCells; } }
 
 		Texture2D pixel;
 		const int DisplaySize = 600;
@@ -126,6 +112,7 @@ namespace LifegameGame
 		public GameBoard(int size, SpriteBatch sprite)
 		{
 			Size = size;
+			nextCells = new CellState[Size, Size];
 			originalBoard = new BoardInstance(size);
 			PlayingBoard = originalBoard;
 			Sprite = sprite;
@@ -160,7 +147,9 @@ namespace LifegameGame
 		{
 			CopyBoard();
 			UpdateByRule(played);
-			PlayingBoard.SwapTurn();
+			var c = PlayingBoard.Cells;
+			PlayingBoard.Cells = nextCells;
+			nextCells = c;
 		}
 
 		void CopyBoard()
