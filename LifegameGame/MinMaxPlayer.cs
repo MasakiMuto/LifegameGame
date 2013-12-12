@@ -35,7 +35,7 @@ namespace LifegameGame
 				Board.SetBoardOrigin();
 			}
 
-			var res = (this.Side == CellState.White) ? GetMaxPoint(list) : GetMinPoint(list);
+			var res = GetMaxPoint(list);
 
 			return res.Key;
 		}
@@ -46,7 +46,7 @@ namespace LifegameGame
 		/// そこに打った時の評価値の計算
 		/// </summary>
 		/// <param name="p"></param>
-		/// <param name="isMin">minを求めるならtrue</param>
+		/// <returns>自分にとって有利なほど+</returns>
 		protected virtual float EvalPosition(BoardInstance board, Point p, int depth, CellState side)
 		{
 			EvalCount++;
@@ -55,8 +55,9 @@ namespace LifegameGame
 			var next = Board.VirtualPlay(side, p);
 			if (Board.IsExit())
 			{
-				if (Board.GetWinner() == CellState.White)
+				if (Board.GetWinner() == this.Side)
 				{
+					Trace.WriteLine("I Win");
 					return GameBoard.WinnerBonus;
 				}
 				else
@@ -66,7 +67,7 @@ namespace LifegameGame
 			}
 			if (depth == 1)
 			{
-				return Board.EvalScore();
+				return Board.EvalScore() * (int)(this.Side);
 			}
 			else
 			{
@@ -74,16 +75,17 @@ namespace LifegameGame
 			}
 		}
 
-		protected virtual float GetBestChild(BoardInstance next, int depth, CellState side)
+		protected float GetBestChild(BoardInstance next, int depth, CellState side)
 		{
+			bool isMax = this.Side == side;
 			List<float> scores = new List<float>();
-			float current = (this.Side == side ? float.MinValue : float.MaxValue);
+			float current = (isMax ? float.MinValue : float.MaxValue);
 			foreach (var item in GetPlayablePoints())
 			{
 				//var b = Board.VirtualPlay(Side, item);
 				//float score = Board.EvalScore();
 				float score = (EvalPosition(next, item, depth - 1, side == CellState.White ? CellState.Black : CellState.White));
-				if ((this.Side == side && score > current) || (this.Side != side && score < current))
+				if ((isMax && score > current) || (!isMax && score < current))
 				{
 					current = score;
 				}
