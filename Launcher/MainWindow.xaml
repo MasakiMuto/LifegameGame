@@ -38,7 +38,7 @@
                         <StackPanel Orientation="Vertical">
                             <ListBox/>
                             <TextBlock Text="{Binding ThinkDepth1, StringFormat=Depth: {0}}"/>
-                            <Slider Minimum="1" Maximum="10" SmallChange="1" TickFrequency="1" Value="{Binding ThinkDepth1}" />
+                            <Slider Minimum="1" Maximum="20" SmallChange="1" TickFrequency="1" Value="{Binding ThinkDepth1}" />
                                     
                         </StackPanel>
                     </GroupBox>
@@ -46,7 +46,7 @@
                         <StackPanel Orientation="Vertical">
                             <ListBox />
                             <TextBlock Text="{Binding ThinkDepth2, StringFormat=Depth: {0}}"/>
-                            <Slider Minimum="1" Maximum="10" SmallChange="1" TickFrequency="1" Value="{Binding ThinkDepth2}" />
+                            <Slider Minimum="1" Maximum="20" SmallChange="1" TickFrequency="1" Value="{Binding ThinkDepth2}" />
                         </StackPanel>
                     </GroupBox>
                 </Grid>

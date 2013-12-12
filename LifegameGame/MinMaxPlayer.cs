@@ -11,7 +11,6 @@ namespace LifegameGame
 	{
 		protected readonly int ThinkDepth;
 
-		TreeNode<float> tree;
 
 		public MinMaxPlayer(GameBoard board, CellState side, int thinkDepth)
 			: base(board, side)
@@ -29,10 +28,11 @@ namespace LifegameGame
 		protected override Point Think()
 		{
 			var list = new PointScoreDictionary();
-			tree = new TreeNode<float>(0, null);
+			var tree = new TreeNode<float>(0, null);
 			foreach (var p in GetPlayablePoints())
 			{
-				list[p] = EvalPosition(Board.PlayingBoard, p, ThinkDepth, this.Side, tree);
+				var score = EvalPosition(Board.PlayingBoard, p, ThinkDepth, this.Side, tree);
+				list[p] = score;
 				Board.SetBoardOrigin();
 			}
 
@@ -51,7 +51,6 @@ namespace LifegameGame
 		/// <returns>自分にとって有利なほど+</returns>
 		protected virtual float EvalPosition(BoardInstance board, Point p, int depth, CellState side, TreeNode<float> t)
 		{
-			var tr = t.AddChild(0);
 			EvalCount++;
 			Board.PlayingBoard = board;
 			Debug.Assert(Board.CanPlay(p));
@@ -61,24 +60,28 @@ namespace LifegameGame
 				if (Board.GetWinner() == this.Side)
 				{
 					//Trace.WriteLine("I Win");
+					t.AddChild(GameBoard.WinnerBonus);
 					return GameBoard.WinnerBonus;
 				}
 				else
 				{
+					t.AddChild(-GameBoard.WinnerBonus);
 					return -GameBoard.WinnerBonus;
 				}
 			}
 			if (depth == 1)
 			{
 				var s = Board.EvalScore() * (int)(this.Side);
-				tr.Value = s;
+				t.AddChild(s);
 				return s;
 			}
 			else
 			{
 				bool isMax = this.Side != side;
 				float current = (isMax ? float.MinValue : float.MaxValue);
-				foreach (var item in GetPlayablePoints())
+				var tr = t.AddChild(0);
+				
+				foreach (var item in GetPlayablePoints().ToArray())
 				{
 					float score = EvalPosition(next, item, depth - 1, side == CellState.White ? CellState.Black : CellState.White, tr);
 					if ((isMax && score > current) || (!isMax && score < current))
