@@ -44,6 +44,7 @@ namespace LifegameGame
 			var current = Board.EvalScore();
 			Trace.WriteLine(Side.ToString() + " Played " + p.ToString());
 			Trace.WriteLine(String.Format("Score {0}→{1}", last, current));
+			Trace.WriteLine("---");
 		}
 
 

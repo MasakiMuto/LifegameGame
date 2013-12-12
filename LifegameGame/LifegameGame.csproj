@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AIPlayerBase.cs" />
-    <Compile Include="AlphaBetaAI.cs" />
+    <Compile Include="AlphaBetaPlayer.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameBoard.cs" />
     <Compile Include="HumanPlayer.cs" />
