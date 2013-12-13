@@ -74,7 +74,7 @@ namespace LifegameGame
 				for (int j = 0; j < Size; j++)
 				{
 					
-					var a = Cells[i, j];
+					var a = Cells[j, i];
 					s.Append(a == CellState.None ? '.' : (a == CellState.White ? 'o' : 'x'));
 					//s.Append('|');
 				}
@@ -202,7 +202,7 @@ namespace LifegameGame
 
 		public override string ToString()
 		{
-			return PlayingBoard.ToString();
+			return originalBoard.ToString();
 		}
 
 		public abstract float EvalScore();

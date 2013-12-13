@@ -46,7 +46,7 @@ namespace LifegameGame
 		{
 			Argment = arg;
 			Init();
-			while (true)
+			while (!isExit)
 			{
 				Update();
 			}
@@ -98,7 +98,7 @@ namespace LifegameGame
 				return;
 			}
 			Console.Write(board.ToString());
-			Console.WriteLine(players[current].Side.ToString() + " Turn");
+			Console.WriteLine(players[current].Side.ToString() + (players[current].Side == CellState.White ? "(o)" : "(x)") + " Turn");
 			if (players[current].Update())
 			{
 				current = 1 - current;
@@ -106,6 +106,7 @@ namespace LifegameGame
 				{
 					isExit = true;
 					winner = board.GetWinner();
+					Console.WriteLine(winner + " Win.");
 				}
 			}
 			
