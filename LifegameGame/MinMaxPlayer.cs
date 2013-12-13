@@ -28,14 +28,21 @@ namespace LifegameGame
 		protected override Point Think()
 		{
 			var list = new PointScoreDictionary();
-			foreach (var p in GetPlayablePoints().ToArray())
+			var tree = TreeNode.Create(null, 0f);
+			tree = null;
+			foreach (var p in GetPlayablePoints())
 			{
-				var score = EvalPosition(Board.PlayingBoard, p, ThinkDepth, this.Side);
+				var score = EvalPosition(Board.PlayingBoard, p, ThinkDepth, this.Side, tree);
 				list[p] = score;
 				Board.SetBoardOrigin();
 			}
 
 			var res = GetMaxPoint(list);
+			if (tree != null)
+			{
+				TreeNode.SetValue(tree, res.Value);
+				System.IO.File.WriteAllText("tree.txt", tree.ToString());
+			}
 			return res.Key;
 		}
 
@@ -46,7 +53,7 @@ namespace LifegameGame
 		/// </summary>
 		/// <param name="p"></param>
 		/// <returns>自分にとって有利なほど+</returns>
-		protected virtual float EvalPosition(BoardInstance board, Point p, int depth, CellState side)
+		protected virtual float EvalPosition(BoardInstance board, Point p, int depth, CellState side, TreeNode<float> t)
 		{
 			EvalCount++;
 			Board.PlayingBoard = board;
@@ -57,34 +64,40 @@ namespace LifegameGame
 				if (Board.GetWinner() == this.Side)
 				{
 					//Trace.WriteLine("I Win");
+					TreeNode.AddChild(t, GameBoard.WinnerBonus);
 					return GameBoard.WinnerBonus;
 				}
 				else
 				{
+					TreeNode.AddChild(t, -GameBoard.WinnerBonus);
 					return -GameBoard.WinnerBonus;
 				}
 			}
 			if (depth == 1)
 			{
 				var s = Board.EvalScore() * (int)(this.Side);
+				TreeNode.AddChild(t, s);
 				return s;
 			}
 			else
 			{
 				bool isMax = this.Side != side;
 				float current = (isMax ? float.MinValue : float.MaxValue);
+				var tr = TreeNode.AddChild(t, 0);
 				
 				foreach (var item in GetPlayablePoints().ToArray())
 				{
-					float score = EvalPosition(next, item, depth - 1, side == CellState.White ? CellState.Black : CellState.White);
+					float score = EvalPosition(next, item, depth - 1, side == CellState.White ? CellState.Black : CellState.White, tr);
 					if ((isMax && score > current) || (!isMax && score < current))
 					{
 						current = score;
 					}
 				}
+				TreeNode.SetValue(tr, current);
 				return current;
 			}
 		}
+
 
 	}
 }

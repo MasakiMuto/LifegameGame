@@ -48,5 +48,35 @@ namespace LifegameGame
 			}
 			return s.ToString();
 		}
+
+		
+	}
+
+	public static class TreeNode
+	{
+		public static TreeNode<T> AddChild<T>(TreeNode<T> parent, T value)
+		{
+			if (parent == null)
+			{
+				return null;
+			}
+			else
+			{
+				return parent.AddChild(value);
+			}
+		}
+
+		public static void SetValue<T>(TreeNode<T> node, T value)
+		{
+			if (node != null)
+			{
+				node.Value = value;
+			}
+		}
+
+		public static TreeNode<T> Create<T>(TreeNode<T> parent, T value)
+		{
+			return new TreeNode<T>(value, parent);
+		}
 	}
 }
