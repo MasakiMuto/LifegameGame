@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace LifegameGame
 {
@@ -68,10 +66,14 @@ namespace LifegameGame
 		public override string ToString()
 		{
 			var s = new StringBuilder(Size * Size);
+			Console.WriteLine(" " + new String(Enumerable.Range(0, Size).Select(x=>(char)('a'+x)).ToArray()));
 			for (int i = 0; i < Size; i++)
 			{
+				s.Append(i.ToString("X"));
+					
 				for (int j = 0; j < Size; j++)
 				{
+					
 					var a = Cells[i, j];
 					s.Append(a == CellState.None ? '.' : (a == CellState.White ? 'o' : 'x'));
 					//s.Append('|');
@@ -98,27 +100,14 @@ namespace LifegameGame
 		public CellState[,] CurrentState { get { return PlayingBoard.Cells; } }
 		protected CellState[,] NextState { get { return nextCells; } }
 
-		Texture2D pixel;
-		const int DisplaySize = 600;
-		readonly float CellSize;
-
-		protected readonly SpriteBatch Sprite;
-
-		public Point Cursor { get; set; }
-		public CellState CursorSide { get; set; }
-
 		public const float WinnerBonus = 1000;
 
-		public GameBoard(int size, SpriteBatch sprite)
+		public GameBoard(int size)
 		{
 			Size = size;
 			nextCells = new CellState[Size, Size];
 			originalBoard = new BoardInstance(size);
 			PlayingBoard = originalBoard;
-			Sprite = sprite;
-			pixel = new Texture2D(sprite.GraphicsDevice, 1, 1);
-			pixel.SetData(new[] { Color.White });
-			CellSize = DisplaySize / Size;
 			Init();
 		}
 
@@ -181,7 +170,8 @@ namespace LifegameGame
 
 		public bool CanPlay(Point p)
 		{
-			return CurrentState[p.X, p.Y] == CellState.None;
+
+			return p.X >= 0 && p.Y >= 0 && p.X < Size && p.Y < Size && CurrentState[p.X, p.Y] == CellState.None;
 		}
 
 
@@ -198,54 +188,7 @@ namespace LifegameGame
 			PlayingBoard = originalBoard;
 		}
 
-
-		/// <summary>
-		/// 座標からグリッド位置に変換する。不正位置ならPoint(-1, -1)
-		/// </summary>
-		/// <param name="pos"></param>
-		/// <returns></returns>
-		public Point GetCellPosition(Vector2 pos)
-		{
-			pos = Vector2.Clamp(pos, Vector2.Zero, new Vector2(CellSize * Size - 1));
-			return new Point((int)(pos.X / CellSize), (int)(pos.Y / CellSize));
-		}
-
-		public void Draw()
-		{
-			Sprite.Begin();
-			Sprite.Draw(pixel, new Rectangle(0, 0, DisplaySize, DisplaySize), Color.Black);
-			for (int i = 0; i < Size; i++)
-			{
-				for (int j = 0; j < Size; j++)
-				{
-					var lt = GetPosition(new Point(i, j));
-					var rb = GetPosition(new Point(i + 1, j + 1));
-					Sprite.Draw(pixel, new Rectangle((int)lt.X, (int)lt.Y, (int)CellSize - 1, (int)CellSize - 1), Color.DarkGreen);
-					var state = originalBoard.Cells[i, j];
-					if (state != CellState.None)
-					{
-						DrawStone(new Point(i, j), state == CellState.Black ? Color.Black : Color.White);
-					}
-				}
-			}
-			if (CursorSide != CellState.None && CanPlay(Cursor))
-			{
-				DrawStone(Cursor, (CursorSide == CellState.Black ? Color.Black : Color.White) * .5f);
-			}
-			Sprite.End();
-		}
-
-		void DrawStone(Point p, Color color)
-		{
-			var lt = GetPosition(p);
-			Sprite.Draw(pixel, new Rectangle((int)lt.X + 8, (int)lt.Y + 8, (int)CellSize - 16, (int)CellSize - 16), color);
-		}
-
-		Vector2 GetPosition(Point p)
-		{
-			return new Vector2(CellSize * p.X, CellSize * p.Y);
-		}
-
+	
 		~GameBoard()
 		{
 			Dispose();
@@ -254,12 +197,7 @@ namespace LifegameGame
 
 		public void Dispose()
 		{
-			if (pixel != null)
-			{
-				pixel.Dispose();
-				pixel = null;
-				GC.SuppressFinalize(this);
-			}
+		
 		}
 
 		public override string ToString()

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace LifegameGame
 {
@@ -34,8 +33,8 @@ namespace LifegameGame
 	public class LifegameBoard : GameBoard
 	{
 
-		public LifegameBoard(SpriteBatch sprite, int size)
-			: base(size, sprite)
+		public LifegameBoard(int size)
+			: base(size)
 		{
 
 		}

@@ -21,10 +21,7 @@ namespace LifegameGame
 		static void Main()
 		{
 			SetTrace();
-			using (game = new Game1(new LaunchArgment()))
-			{
-				game.Run();
-			}
+			game = new Game1(new LaunchArgment());			
 		}
 
 		public static void SetTrace()

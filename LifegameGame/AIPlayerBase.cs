@@ -10,7 +10,6 @@ namespace LifegameGame
 	using PointScoreDictionary = Dictionary<Point, float>;
 	public abstract class AIPlayerBase : Player
 	{
-		Task<Point> thinkTask;
 		Stopwatch watch;
 		protected int EvalCount;
 
@@ -22,24 +21,17 @@ namespace LifegameGame
 
 		public override bool Update()
 		{
-			if (thinkTask == null)
-			{
-				EvalCount = 0;
-				thinkTask = Task.Factory.StartNew<Point>(Think);
-				watch.Start();
-			}
-			if (thinkTask.IsCompleted)
-			{
-				watch.Stop();
-				Trace.WriteLine("ThinkingTime= " + watch.Elapsed.ToString());
-				Trace.WriteLine(EvalCount.ToString() + " Nodes Evaled.");
-				watch.Reset();
-				Play(thinkTask.Result);
-				thinkTask.Dispose();
-				thinkTask = null;
-				return true;
-			}
-			return false;
+			EvalCount = 0;
+			watch.Start();
+			
+			Play(Think());
+
+			watch.Stop();
+			Trace.WriteLine("ThinkingTime= " + watch.Elapsed.ToString());
+			Trace.WriteLine(EvalCount.ToString() + " Nodes Evaled.");
+			watch.Reset();
+			return true;
+
 		}
 
 		protected abstract Point Think();

@@ -2,16 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace LifegameGame
 {
 	public class HumanPlayer : Player
 	{
-
-		bool lastPush;
 
 		public HumanPlayer(GameBoard board, CellState side)
 			: base(board, side)
@@ -21,23 +16,21 @@ namespace LifegameGame
 
 		public override bool Update()
 		{
-			var input = Mouse.GetState();
-			var p = Board.GetCellPosition(new Vector2(input.X, input.Y));
-			Board.CursorSide = Side;
-			Board.Cursor = p;
-			if (input.LeftButton == ButtonState.Pressed)
+			Console.WriteLine("Where?");
+			try
 			{
-				lastPush = true;
-			}
-			if(lastPush && input.LeftButton == ButtonState.Released)
-			{
-				lastPush = false;
+				int x = Char.ToLower(Console.ReadKey().KeyChar) - 'a';
+				int y = int.Parse(Console.ReadKey().KeyChar.ToString(), System.Globalization.NumberStyles.HexNumber);
+				Console.ReadLine();
+				var p = new Point(x, y);
 				if (Board.CanPlay(p))
 				{
 					Play(p);
 					return true;
 				}
 			}
+			catch { }
+			Console.WriteLine("Cannot Play");
 			return false;
 		}
 
