@@ -74,11 +74,11 @@ namespace LifegameGame
 					}
 					if (!isMax && current > alphaBeta)
 					{
-						return current;
+						break;
 					}
 					if (isMax && current < alphaBeta)
 					{
-						return current;
+						break;
 					}
 				}
 				return current;
