@@ -24,7 +24,7 @@ namespace LifegameGame
 			float alpha = float.MinValue;
 			var tree = TreeNode.Create(null, 0f);
 			tree = null;
-			foreach (var p in GetPlayablePoints().ToArray())
+			foreach (var p in GetPlayablePoints())
 			{
 				float score = EvalPosition(Board.PlayingBoard, p, ThinkDepth, this.Side, alpha, tree);
 				list[p] = score;
@@ -75,9 +75,9 @@ namespace LifegameGame
 				bool isMax = this.Side != side;
 				float current = (isMax ? float.MinValue : float.MaxValue);
 				var tr = TreeNode.AddChild(t, 0);
-				foreach (var item in GetPlayablePoints().ToArray())
+				foreach (var item in GetPlayablePoints())
 				{
-					float score = EvalPosition(next, item, depth - 1, side == CellState.White ? CellState.Black : CellState.White, current, tr);
+					float score = EvalPosition(next, item, depth - 1, GetAntiPlayer(side), current, tr);
 					if ((isMax && score > current) || (!isMax && score < current))
 					{
 						current = score;

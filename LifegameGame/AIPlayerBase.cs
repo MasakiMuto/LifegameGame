@@ -50,7 +50,7 @@ namespace LifegameGame
 				Enumerable.Range(0, Board.Size)
 				.Select(y => new Point(x, y))
 				.Where(p => Board.CanPlay(p))
-				);
+				).ToArray();
 		}
 
 		protected KeyValuePair<Point, float> GetMaxPoint(PointScoreDictionary dict)
@@ -77,6 +77,11 @@ namespace LifegameGame
 				}
 			}
 			return p;
+		}
+
+		public CellState GetAntiPlayer(CellState state)
+		{
+			return state == CellState.White ? CellState.Black : CellState.White;
 		}
 	}
 

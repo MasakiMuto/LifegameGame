@@ -15,6 +15,7 @@ namespace LifegameGame
 		Human,
 		MinMaxAI,
 		AlphaBetaAI,
+		//MonteCarloAI,
 	}
 
 	public class LaunchArgment
@@ -118,6 +119,9 @@ namespace LifegameGame
 						case PlayerType.AlphaBetaAI:
 							players[i] = new AlphaBetaPlayer(board, a[i].Item3, a[i].Item2);
 							break;
+						//case PlayerType.MonteCarloAI:
+						//	players[i] = new MonteCarloPlayer(board, a[i].Item3);
+						//	break;
 						default:
 							break;
 					}
