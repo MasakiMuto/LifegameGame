@@ -32,7 +32,10 @@ namespace LifegameGame
 					return true;
 				}
 			}
-			catch { }
+			catch 
+			{
+				Console.WriteLine();
+			}
 			Console.WriteLine("Cannot Play");
 			return false;
 		}

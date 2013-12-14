@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace LifegameGame
 {
@@ -14,6 +16,7 @@ namespace LifegameGame
 		//MonteCarloAI,
 	}
 
+	[Serializable]
 	public class LaunchArgment
 	{
 		public PlayerType Player1 { get; set; }
@@ -40,15 +43,56 @@ namespace LifegameGame
 
 		bool isExit;
 		CellState winner;
-		readonly LaunchArgment Argment;
+		LaunchArgment Argment;
 
 		public Game1(LaunchArgment arg)
 		{
 			Argment = arg;
+			//SaveArgment();
+			LoadArgment();
 			Init();
 			while (!isExit)
 			{
 				Update();
+			}
+		}
+
+		void LoadArgment()
+		{
+			if (!File.Exists("config.xml"))
+			{
+				return;
+			}
+			try
+			{
+				var s = new XmlSerializer(typeof(LaunchArgment));
+				using (var str = File.OpenRead("config.xml"))
+				{
+					Argment = s.Deserialize(str) as LaunchArgment;
+				}
+			}
+			catch { }
+		}
+
+		void SaveArgment()
+		{
+			var s = new XmlSerializer(typeof(LaunchArgment));
+			FileStream str = null;
+			try
+			{
+				str = File.OpenWrite("config.xml");
+				s.Serialize(str, Argment);
+				str.Close();
+				str.Dispose();
+				str = null;
+			}
+			catch { }
+			finally
+			{
+				if (str != null)
+				{
+					str.Dispose();
+				}
 			}
 		}
 
