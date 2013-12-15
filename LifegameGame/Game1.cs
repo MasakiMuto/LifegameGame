@@ -169,6 +169,10 @@ namespace LifegameGame
 						isExit = true;
 						winner = board.GetWinner();
 						Window.Title = "Winner:" + winner.ToString();
+						foreach (var item in players.OfType<AIPlayerBase>())
+						{
+							Trace.WriteLine(string.Format("AI Player {0} Evaled Total {1} Nodes", item.Side, item.TotalEvalCount));
+						}
 					}
 				}
 			}

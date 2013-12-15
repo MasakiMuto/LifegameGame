@@ -56,6 +56,7 @@ namespace LifegameGame
 		protected virtual float EvalPosition(BoardInstance board, Point p, int depth, CellState side, TreeNode<float> t)
 		{
 			EvalCount++;
+			TotalEvalCount++;
 			Board.PlayingBoard = board;
 			Debug.Assert(Board.CanPlay(p));
 			var next = Board.VirtualPlay(side, p);

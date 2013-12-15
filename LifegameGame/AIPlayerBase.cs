@@ -13,6 +13,7 @@ namespace LifegameGame
 		Task<Point> thinkTask;
 		Stopwatch watch;
 		protected int EvalCount;
+		public int TotalEvalCount { get; protected set; }
 
 		public AIPlayerBase(GameBoard board, CellState state)
 			: base(board, state)
